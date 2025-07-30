@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { SubscriptionCard, type Subscription } from "./SubscriptionCard";
 import { SubscriptionDetail } from "./SubscriptionDetail";
+import { SubscriptionsPage } from "./SubscriptionsPage";
+import { AnalyticsPage } from "./AnalyticsPage";
+import { CalendarPage } from "./CalendarPage";
+import { NotificationsPage } from "./NotificationsPage";
+import { SettingsPage } from "./SettingsPage";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -77,18 +82,25 @@ export function Dashboard({ activeTab }: DashboardProps) {
   const inProgressCount = mockSubscriptions.filter(s => s.status === "active" && s.priority === "medium").length;
   const completedCount = mockSubscriptions.filter(s => s.status === "unused" || s.priority === "low").length;
 
-  if (activeTab !== "dashboard") {
-    return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">Coming Soon</h2>
-          <p>This section is under development</p>
-        </div>
-      </div>
-    );
-  }
+  const renderContent = () => {
+    switch (activeTab) {
+      case "subscriptions":
+        return <SubscriptionsPage />;
+      case "analytics":
+        return <AnalyticsPage />;
+      case "calendar":
+        return <CalendarPage />;
+      case "notifications":
+        return <NotificationsPage />;
+      case "settings":
+        return <SettingsPage />;
+      default:
+        return renderDashboard();
+    }
+  };
 
-  return (
+  const renderDashboard = () => (
+
     <div className="flex-1 flex">
       {/* Main Content */}
       <div className="flex-1 p-6 overflow-y-auto">
@@ -173,6 +185,12 @@ export function Dashboard({ activeTab }: DashboardProps) {
       <div className="w-1/2 border-l border-border bg-card">
         <SubscriptionDetail subscription={selectedSubscription} />
       </div>
+    </div>
+  );
+
+  return (
+    <div className="flex-1">
+      {renderContent()}
     </div>
   );
 }
